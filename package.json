@@ -1,0 +1,9 @@
+{
+  "name": "apollo-link-webworker",
+  "version": "0.0.1",
+  "description": "Apollo link that lets you use graphql client-side only, with a webworker as a \"server\" supporting normal query and subscriptions",
+  "main": "index.js",
+  "repository": "https://github.com/PCreations/apollo-link-webworker.git",
+  "author": "Pierre Criulanscy <pcriulan@gmail.com>",
+  "license": "MIT"
+}
