@@ -1,4 +1,4 @@
-import { ApolloLink, Observable } from 'apollo-link';
+import { ApolloLink, Observable } from 'apollo-link-core';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 export class PromiseWorkerLink extends ApolloLink {
@@ -78,7 +78,7 @@ export class SubscriptionWorkerLink extends ApolloLink {
 // TODO: quick hack
 export const isSubscription = operation => operation.query.definitions[0].operation === 'subscription';
 
-export default ({ worker, promiseWorker }) => ApolloLink.split(
+export const createWebWorkerLink = ({ worker, promiseWorker }) => ApolloLink.split(
   isSubscription,
   new SubscriptionWorkerLink({ worker }),
   new PromiseWorkerLink({ promiseWorker })

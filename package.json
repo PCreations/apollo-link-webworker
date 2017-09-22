@@ -12,7 +12,7 @@
     "prepublishOnly": "yarn clean:dist && yarn build"
   },
   "dependencies": {
-    "apollo-link": "^0.5.4",
+    "apollo-link-core": "^0.5.4",
     "promise-worker": "^1.1.1",
     "subscriptions-transport-ws": "^0.8.3"
   },
