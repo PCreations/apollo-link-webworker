@@ -19,12 +19,13 @@ export const createWorker = ({
   return Promise.resolve();
 });
 
-export const addSubscriptions = ({
+export const handleSubscriptions = ({
   self,
+  message,
   schema,
   pubsub,
   context,
-}) => self.onmessage = message => {
+}) => {
   const messageData = JSON.parse(message.data);
   if (messageData.type === 'start') {
     const payload = messageData.payload;
