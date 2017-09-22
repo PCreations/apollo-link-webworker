@@ -1,11 +1,12 @@
 import { ApolloLink, Observable } from 'apollo-link-core';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
+import PromiseWorker from 'promise-worker';
 
 export class PromiseWorkerLink extends ApolloLink {
   promiseWorker = null;
-  constructor({ promiseWorker }) {
+  constructor({ worker }) {
     super();
-    this.promiseWorker = promiseWorker;
+    this.promiseWorker = new PromiseWorker(worker);
   }
   request(operation) {
     return new Observable(observer => {
@@ -78,8 +79,8 @@ export class SubscriptionWorkerLink extends ApolloLink {
 // TODO: quick hack
 export const isSubscription = operation => operation.query.definitions[0].operation === 'subscription';
 
-export const createWebWorkerLink = ({ worker, promiseWorker }) => ApolloLink.split(
+export const createWebWorkerLink = ({ worker }) => ApolloLink.split(
   isSubscription,
   new SubscriptionWorkerLink({ worker }),
-  new PromiseWorkerLink({ promiseWorker })
+  new PromiseWorkerLink({ worker })
 );
