@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "apollo-link": "^0.5.4",
+    "promise-worker": "^1.1.1",
     "subscriptions-transport-ws": "^0.8.3"
   },
   "devDependencies": {
@@ -21,7 +22,8 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "rimraf": "^2.6.2",
-    "rollup": "^0.49.3",
-    "rollup-plugin-babel": "^3.0.2"
+    "rollup": "0.47.6",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-multi-entry": "^2.0.1"
   }
 }
