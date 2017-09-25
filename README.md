@@ -2,7 +2,7 @@
 Apollo link that lets you use graphql client-side only, with a webworker as a "server" supporting normal query and subscriptions
 
 # Important note
-This repository is just a proof of concept and not intended to production use yet. But contributions are welcomed :)
+This repository is just a proof of concept and not intended for production use yet. But contributions are welcomed :)
 
 # Installing
 `yarn add apollo-link-webworker`
@@ -11,7 +11,7 @@ This repository is just a proof of concept and not intended to production use ye
 Start by creating a `worker.js` file. Then you can import the utility functions that help you to build the worker :
 
 *worker.js*
-```
+```javascript
 import { createWorker, handleSubscriptions } from 'apollo-link-webworker';
 ```
 
@@ -20,7 +20,7 @@ import { createWorker, handleSubscriptions } from 'apollo-link-webworker';
 `createWorker` takes an option object as parameter accepting the schema and the context:
 
 *worker.js*
-```
+```javascript
 import { createWorker, handleSubscriptions } from 'apollo-link-webworker';
 
 import schema from './schema'; // your graphql schema
@@ -41,7 +41,7 @@ If you only want to support classical communication (i.e : you don't mind about 
 To add subscriptions, just compose the `handleSubscriptions` utility function inside the worker `onmessage` handler :
 
 *worker.js*
-```
+```javascript
 import { createWorker, handleSubscriptions } from 'apollo-link-webworker';
 
 import schema from './schema'; // your graphql schema
@@ -63,7 +63,7 @@ self.onmessage = message => handleSubscriptions({
 ```
 
 *pubsub.js*
-```
+```javascript
 import { PubSub } from 'graphql-subscriptions';
 
 const pubsub = new PubSub();
@@ -75,7 +75,7 @@ Whenever you need to generate a subscription from an external event source, you 
 
 For example (with firebase) :
 *schema.js*
-```
+```javascript
 import pubsub from './pubsub';
 
 const schemaString = `
@@ -101,7 +101,7 @@ const resolvers = {
 ```
 
 *OnMessageAdded.graphql*
-```
+```javascript
 subscription OnMessageAdded {
   messageAdded {
     id
@@ -114,7 +114,7 @@ subscription OnMessageAdded {
 }
 ```
 
-```
+```javascript
 // Generates a subscriptions from external firebase event source
 firebaseDb().ref('/messages').on('child_added', snapshot => pubsub.publish('OnMessageAdded', {
  messageAdded: snapshot.val()
@@ -126,7 +126,7 @@ firebaseDb().ref('/messages').on('child_added', snapshot => pubsub.publish('OnMe
 Once you created your `worker.js` file you can instanciate a new `WebWorkerLink` from the factory function `createWebWorkerLink` :
 
 *client.js*
-```
+```javascript
 import { ApolloClient } from 'apollo-client';
 import InMemoryCache from 'apollo-cache-inmemory';
 import { createWebWorkerLink } from 'apollo-link-webworker';
