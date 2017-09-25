@@ -1,5 +1,6 @@
 import { execute, parse } from 'graphql';
-const registerPromiseWorker = require('promise-worker/register')
+import { MessageTypes } from 'subscriptions-transport-ws';
+const registerPromiseWorker = require('promise-worker/register');
 
 export const createWorker = ({
   schema,
@@ -27,7 +28,7 @@ export const handleSubscriptions = ({
   context,
 }) => {
   const messageData = JSON.parse(message.data);
-  if (messageData.type === 'start') {
+  if (messageData.type === MessageTypes.GQL_START) {
     const payload = messageData.payload;
     pubsub.subscribe(payload.operationName, data => {
       return execute(
@@ -40,7 +41,7 @@ export const handleSubscriptions = ({
       ).then(({ data, errors }) => {
         if (errors) console.error(errors[0]);
         self.postMessage(JSON.stringify({
-          type: 'data',
+          type: MessageTypes.GQL_DATA,
           id: messageData.id,
           payload: {
             errors,

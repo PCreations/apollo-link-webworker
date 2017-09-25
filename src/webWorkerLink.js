@@ -1,5 +1,5 @@
 import { ApolloLink, Observable } from 'apollo-link-core';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { SubscriptionClient, MessageTypes } from 'subscriptions-transport-ws';
 import PromiseWorker from 'promise-worker';
 
 export class PromiseWorkerLink extends ApolloLink {
@@ -34,14 +34,7 @@ export const createWorkerInterface = ({ worker }) => {
       console.log('closing noop');
     }
     send(serializedMessage) {
-      console.log('sending', serializedMessage);
       worker.postMessage(serializedMessage);
-    }
-    set onopen(fn) {
-      console.info('onopen noop');
-    }
-    set onclose(fn) {
-      console.log('onclose noop');
     }
     set onerror(fn) {
       worker.onerror = fn;
@@ -49,7 +42,7 @@ export const createWorkerInterface = ({ worker }) => {
     set onmessage(fn) {
       worker.onmessage = ({ data }) => {
         const d = JSON.parse(data);
-        if (d.type === 'data') {
+        if (d.type === MessageTypes.GQL_START) {
           fn({ data });
         }
       };
