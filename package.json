@@ -11,8 +11,13 @@
     "build": "yarn rollup -- -c",
     "prepublishOnly": "yarn clean:dist && yarn build"
   },
+  "peerDependecies": {
+    "apollo-link": "^0.8.0",
+    "graphql": "^0.11.0"
+  },
   "dependencies": {
-    "apollo-link-core": "^0.5.4",
+    "apollo-link": "^0.8.0",
+    "graphql": "0.11.7",
     "promise-worker": "^1.1.1",
     "subscriptions-transport-ws": "^0.8.3"
   },
