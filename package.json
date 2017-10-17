@@ -1,6 +1,6 @@
 {
   "name": "apollo-link-webworker",
-  "version": "0.0.10",
+  "version": "0.0.10-beta-1",
   "description": "Apollo link that lets you use graphql client-side only, with a webworker as a \"server\" supporting normal query and subscriptions",
   "main": "dist/bundle.umd.js",
   "repository": "https://github.com/PCreations/apollo-link-webworker.git",
@@ -11,15 +11,13 @@
     "build": "yarn rollup -- -c",
     "prepublishOnly": "yarn clean:dist && yarn build"
   },
-  "peerDependecies": {
+  "peerDependencies": {
     "apollo-link": "^0.8.0",
-    "graphql": "^0.11.0"
+    "graphql": "^0.11.0",
+    "subscriptions-transport-ws": "^0.8.3"
   },
   "dependencies": {
-    "apollo-link": "^0.8.0",
-    "graphql": "0.11.7",
-    "promise-worker": "^1.1.1",
-    "subscriptions-transport-ws": "^0.8.3"
+    "promise-worker": "^1.1.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -28,7 +26,6 @@
     "babel-preset-es2015": "^6.24.1",
     "rimraf": "^2.6.2",
     "rollup": "0.47.6",
-    "rollup-plugin-babel": "^3.0.2",
-    "rollup-plugin-multi-entry": "^2.0.1"
+    "rollup-plugin-babel": "^3.0.2"
   }
 }
