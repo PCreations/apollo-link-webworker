@@ -1,6 +1,10 @@
-import { ApolloLink, Observable } from 'apollo-link-core';
-import { SubscriptionClient, MessageTypes } from 'subscriptions-transport-ws';
+import { ApolloLink, Observable } from 'apollo-link';
+import {
+  SubscriptionClient,
+} from 'subscriptions-transport-ws';
 import PromiseWorker from 'promise-worker';
+
+import * as MessageTypes from './MessageTypes';
 
 export class PromiseWorkerLink extends ApolloLink {
   promiseWorker = null;
@@ -42,7 +46,8 @@ export const createWorkerInterface = ({ worker }) => {
     set onmessage(fn) {
       worker.onmessage = ({ data }) => {
         const d = JSON.parse(data);
-        if (d.type === MessageTypes.GQL_START) {
+        console.log('WorkerInterface.onmessage', data);
+        if (Object.keys(MessageTypes).map(k => MessageTypes[k]).indexOf(d.type) !== -1) {
           fn({ data });
         }
       };
