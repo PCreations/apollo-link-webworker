@@ -110,11 +110,11 @@ const getOnMessage = ({ schema, context }) => {
     }
   }
   
-  _onMessage = jsonMessage => {
-    const message = JSON.parse(jsonMessage).data;
-    return () => {
-      const opId = message.id;
-      if (typeof opId !== 'undefined') {
+  _onMessage = workerMessage => {
+    console.log('RECEIVED JSON MESSAGE', workerMessage);
+    const message = JSON.parse(workerMessage.data);
+    const opId = message.id;
+    if (typeof opId !== 'undefined') {
         switch (message.type) {
           case MessageTypes.GQL_START:
             // if we already have a subscription with this id, unsubscribe from it first
@@ -224,7 +224,6 @@ const getOnMessage = ({ schema, context }) => {
               sendError(opId, { message: 'Invalid message type!' });
         } 
       }
-    };
   };
   
   return _onMessage;
@@ -235,4 +234,4 @@ export const handleSubscriptions = ({
   message,
   schema,
   context,
-}) => getOnMessage({ schema, context });
+}) => getOnMessage({ schema, context })(message);
