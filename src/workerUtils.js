@@ -84,15 +84,7 @@ const getOnMessage = ({ schema, context }) => {
   };
   
   const sendError = (opId, errorPayload, overrideDefaultErrorType) => {
-    const sanitizedOverrideDefaultErrorType = overrideDefaultErrorType || MessageTypes.GQL_ERROR;
-    if ([
-        MessageTypes.GQL_CONNECTION_ERROR,
-        MessageTypes.GQL_ERROR,
-      ].indexOf(sanitizedOverrideDefaultErrorType) === -1) {
-      throw new Error('overrideDefaultErrorType should be one of the allowed error messages' +
-        ' GQL_CONNECTION_ERROR or GQL_ERROR');
-    }
-    sendMessage(opId, sanitizedOverrideDefaultErrorType, errorPayload);
+    sendMessage(opId, MessageTypes.GQL_ERROR, errorPayload);
   }
   
   const connectionContext = {
@@ -111,7 +103,6 @@ const getOnMessage = ({ schema, context }) => {
   }
   
   _onMessage = workerMessage => {
-    console.log('RECEIVED JSON MESSAGE', workerMessage);
     const message = JSON.parse(workerMessage.data);
     const opId = message.id;
     if (typeof opId !== 'undefined') {

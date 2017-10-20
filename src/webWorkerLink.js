@@ -46,7 +46,6 @@ export const createWorkerInterface = ({ worker }) => {
     set onmessage(fn) {
       worker.onmessage = ({ data }) => {
         const d = JSON.parse(data);
-        console.log('WorkerInterface.onmessage', data);
         if (Object.keys(MessageTypes).map(k => MessageTypes[k]).indexOf(d.type) !== -1) {
           fn({ data });
         }
