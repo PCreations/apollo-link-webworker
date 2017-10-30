@@ -5,7 +5,8 @@ Apollo link that lets you use graphql client-side only, with a webworker as a "s
 This repository is just a proof of concept and not intended for production use yet. But contributions are welcomed :)
 
 # Installing
-`yarn add apollo-link-webworker`
+Install the package and its peer dependencies :
+`yarn add apollo-link-webworker graphql apollo-link subscriptions-transport-ws`
 
 # Getting started
 Start by creating a `worker.js` file. Then you can import the utility functions that help you to build the worker :
@@ -80,11 +81,11 @@ import pubsub from './pubsub';
 
 const schemaString = `
   [...]
-  
+
   type Subscription {
     messageAdded: Message!
   }
-  
+
   [...]
 
 `;
