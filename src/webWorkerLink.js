@@ -1,3 +1,4 @@
+import { DocumentNode, getOperationAST, parse } from 'graphql';
 import { ApolloLink, Observable } from 'apollo-link';
 import {
   SubscriptionClient,
@@ -56,7 +57,7 @@ export const createWorkerInterface = ({ worker }) => {
   WorkerInterface.CLOSED = 'CLOSED';
   WorkerInterface.OPEN = 'OPEN';
   WorkerInterface.CONNECTING = 'CONNECTING';
-  
+
   return WorkerInterface;
 }
 
@@ -73,11 +74,24 @@ export class SubscriptionWorkerLink extends ApolloLink {
   }
 }
 
-// TODO: quick hack
-export const isSubscription = operation => operation.query.definitions[0].operation === 'subscription';
+export const isASubscriptionOperation = (document, operationName) => {
+  const operationAST = getOperationAST(document, operationName);
 
-export const createWebWorkerLink = ({ worker }) => ApolloLink.split(
-  isSubscription,
-  new SubscriptionWorkerLink({ worker }),
-  new PromiseWorkerLink({ worker })
-);
+  return !!operationAST && operationAST.operation === 'subscription';
+};
+
+export const createWebWorkerLink = ({ worker }) => {
+  const subscriptionWorkerLink = new SubscriptionWorkerLink({ worker });
+  const promiseWorkerLink = new PromiseWorkerLink({ worker });
+  const link = ApolloLink.split(
+    operation => {
+      const document = parse(operation.query);
+      return isASubscriptionOperation(document, operation.operationName);
+    },
+    subscriptionWorkerLink,
+    promiseWorkerLink
+  );
+  link.__subscriptionWorkerLink = subscriptionWorkerLink;
+  link.__promiseWorkerLink = promiseWorkerLink;
+  return link;
+};

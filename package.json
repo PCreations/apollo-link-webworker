@@ -7,6 +7,7 @@
   "author": "Pierre Criulanscy <pcriulan@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "test": "jest",
     "clean:dist": "rimraf dist/*",
     "build": "yarn rollup -- -c",
     "prepublishOnly": "yarn clean:dist && yarn build"
@@ -21,12 +22,17 @@
     "promise-worker": "^1.1.1"
   },
   "devDependencies": {
+    "apollo-link": "^1.0.0",
     "babel-core": "^6.26.0",
+    "babel-jest": "^21.2.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
+    "graphql": "^0.11.7",
+    "jest": "^21.2.1",
     "rimraf": "^2.6.2",
     "rollup": "0.47.6",
-    "rollup-plugin-babel": "^3.0.2"
+    "rollup-plugin-babel": "^3.0.2",
+    "subscriptions-transport-ws": "^0.9.1"
   }
 }
