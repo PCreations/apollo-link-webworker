@@ -33,6 +33,64 @@ createWorker({
 });
 ```
 
+## Configuring the webpack worker-loader
+
+In order to `require` the worker file, you'll need to add the `worker-loader` to your webpack configuration :
+
+`yarn add worker-loader --dev`
+
+Then, with an ejected `react-app` for example, edit the `config/webpack.config.[dev/prod].js` files to add the specific loader :
+
+```
+[...]
+module: {
+    strictExportPresence: true,
+    rules: [
+      // TODO: Disable require.ensure as it's not a standard language feature.
+      // We are waiting for https://github.com/facebookincubator/create-react-app/issues/2176.
+      // { parser: { requireEnsure: false } },
+
+      // First, run the linter.
+      // It's important to do this before Babel processes the JS.
+      {
+        test: /\.(js|jsx|mjs)$/,
+        enforce: 'pre',
+        use: [
+          {
+            options: {
+              formatter: eslintFormatter,
+              eslintPath: require.resolve('eslint'),
+              
+            },
+            loader: require.resolve('eslint-loader'),
+          },
+        ],
+        include: paths.appSrc,
+      },
+      {
+        // "oneOf" will traverse all following loaders until one will
+        // match the requirements. When no loader matches it will fall
+        // back to the "file" loader at the end of the loader list.
+        oneOf: [
+          {
+            test: /worker\.js$/,  //worker.js is the filename I chose
+            include: path.appSrc,
+            loader: require.resolve('worker-loader'),
+          },
+          // "url" loader works like "file" loader except that it embeds assets
+          // smaller than specified limit in bytes as data URLs to avoid requests.
+          // A missing `test` is equivalent to a match.
+          {
+            test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+            loader: require.resolve('url-loader'),
+            options: {
+              limit: 10000,
+              name: 'static/media/[name].[hash:8].[ext]',
+            },
+          },
+[...]
+```
+
 If you only want to support classical communication (i.e : you don't mind about subscriptions) you can skip the next step.
 
 ## Handling subscriptions
