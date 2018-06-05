@@ -107,11 +107,12 @@ const getOnMessage = ({ schema, context }) => {
     const opId = message.id;
     if (typeof opId !== 'undefined') {
         switch (message.type) {
+          case MessageTypes.GQL_STOP:
+            unsubscribe(opId);
+            break;
+
           case MessageTypes.GQL_START:
-            // if we already have a subscription with this id, unsubscribe from it first
-            if (connectionContext.operations && connectionContext.operations[opId]) {
-              unsubscribe(opId);
-            }
+            unsubscribe(opId);
             
             const baseParams = {
               query: message.payload.query,
