@@ -1,0 +1,12 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "interface-name": false,
+    "interface-over-type-literal": false,
+    "max-classes-per-file": false,
+    "no-empty-interface": false,
+    "no-namespace": false,
+    "no-reference": false,
+    "variable-name": false
+  }
+}

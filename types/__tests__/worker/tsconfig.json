@@ -1,0 +1,6 @@
+{
+  "extends": "../../workerUtils/tsconfig.json",
+  "include": [
+    "./index.ts"
+  ]
+}

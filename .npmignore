@@ -1,2 +1,4 @@
 src/
 .c9/
+types/**/*.json
+types/__tests__

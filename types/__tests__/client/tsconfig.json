@@ -1,0 +1,6 @@
+{
+  "extends": "../../webWorkerLink/tsconfig.json",
+  "include": [
+    "./index.ts"
+  ]
+}
