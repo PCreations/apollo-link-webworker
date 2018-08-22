@@ -208,5 +208,123 @@ const client = new ApolloClient({
 export default client;
 ```
 
+## Typescript support
+
+To use `apollo-link-webworker` with typescript, you will need some special setup in `tsconfig.json` file.
+The problem has to do with the typescript lib itself; the "dom" and "webworker" libraries collide when used together.
+To get over this, you need to enable subdirectory-styled module resolution by setting `paths` option in `compilerOptions`.
+In case your `tsconfig.json` file is in the project root directory:
+
+*tsconfig.json*
+```json5
+{
+  "compilerOptions": {
+    "baseUrl": ".", // this is required by `paths` option
+    "paths": {
+      "apollo-link-webworker/*": "node_modules/apollo-link-webworker/types/*"
+    },
+    // other options
+  }
+}
+```
+
+Then you can use `apollo-link-webworker`, specifying which one you want to use.
+Use `workerUtils` for worker scripts and `webWorkerLink` for creating apollo link for apollo client.
+
+*worker.ts*
+```typescript
+import { createWorker, handleSubscriptions } from "apollo-link-webworker/workerUtils";
+import context from "./context";
+import pubsub from "./pubsub";
+import schema from "./schema";
+
+createWorker({ schema, context });
+
+addEventListener("message", (message: MessageEvent) => handleSubscriptions({
+  self,
+  schema,
+  context,
+  message,
+  pubsub,
+}));
+```
+
+*client.ts*
+```typescript
+import { ApolloClient } from "apollo-client";
+import InMemoryCache from "apollo-cache-inmemory";
+import { createWebWorkerLink } from "apollo-link-webworker/webWorkerLink";
+
+// you need to set up a bundling process (e.g. webpack with worker-loader) for this to work
+import GraphqlWorker from "./worker";
+
+const worker = new GraphqlWorker();
+const link = createWebWorkerLink({ worker });
+const cache = new InMemoryCache();
+
+const client = new ApolloClient({ cache, link });
+export default client;
+```
+
+### More about `tsconfig.json`
+
+In case the `tsconfig.json` file is not in the project root directory, you need to adjust the `paths` (and\or `baseUrl`) settings in `compilerOptions`.
+(The javascript output is not affected; rather, this is used for type definition checks.)
+#### `baseUrl`
+
+`baseUrl` is the directory where the typescript compiler will look up first for imported modules with non-relative paths.
+The simplest way is to set it to the current directory (where `tsconfig.json` file resides) - `"."`.
+Or, you can also set it to the project root directory.
+
+*src/tsconfig.json*
+```json5
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".", // this sets the value to /project/root/src
+    "baseUrl": ".." // this becomes /project/root
+  },
+  // other options
+}
+```
+
+#### `paths`
+
+This option is for specifically informing the compiler to look up designated directories for the given modules with non-relative path.
+The key is the name of the module, and the value is an array of directories or files to look for.
+`baseUrl` is important here, because the directories and files are interpreted as relative paths to the value of `baseUrl`.
+
+*src/tsconfig.json*
+```json5
+{
+  "compilerOptions": {
+    "baseUrl": "..", // /project/root
+    "paths": {
+      "jquery": ["vendor/jquery"], // /project/root/vendor/jquery
+      "myLib/*": ["lib/*"] // wildcard matching for subdirectories also work
+    },
+    // other options
+  }
+}
+```
+
+Thus, one of the possible configurations for our use case can be:
+
+*src/tsconfig.json*
+```json5
+{
+  "compilerOptions": {
+    "baseUrl": ".", // look up the src directory first for non-relative paths
+    "paths": {
+      // typescript definitions reside in the `types` directory, so
+      "apollo-link-webworker/*": ["../node_modules/apollo-link-webworker/types/*"]
+    },
+    // other options
+  }
+}
+```
+
+More about `baseUrl` and `paths` can be found in the [typescript handbook](https://www.typescriptlang.org/docs/handbook/module-resolution.html#base-url).
+
 # Example chat application with Firebase & Authentication :
 [Firechat repository](https://github.com/PCreations/firechat)
