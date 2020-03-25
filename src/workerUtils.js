@@ -103,7 +103,7 @@ const getOnMessage = ({ schema, context }) => {
   }
   
   _onMessage = workerMessage => {
-    const message = JSON.parse(workerMessage.data);
+    const message = (typeof workerMessage.data === "object") ? workerMessage.data : JSON.parse(workerMessage.data);
     const opId = message.id;
     if (typeof opId !== 'undefined') {
         switch (message.type) {
